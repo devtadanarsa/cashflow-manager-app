@@ -1,8 +1,59 @@
-#include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
 #include <stdbool.h>
 #include "formula.h"
+#include <time.h>
+#include <stdio.h>
+#include <string.h>
+
+int tglHariIni(){
+    time_t t;
+    t = time(NULL);
+    struct tm tm = *localtime(&t);
+    return tm.tm_mday;
+}
+
+int blnHariIni(){
+    time_t t;
+    t = time(NULL);
+    struct tm tm = *localtime(&t);
+    return tm.tm_mon+1;
+}
+
+int thnHariIni(){
+    time_t t;
+    t = time(NULL);
+    struct tm tm = *localtime(&t);
+    return tm.tm_year+1900;
+}
+
+char *bulanString(){
+    int bulan = blnHariIni();
+    if(bulan == 1){
+        return "Januari";
+    }else if(bulan == 2){
+        return "Februari";
+    }else if(bulan == 3){
+        return "Maret";
+    }else if(bulan == 4){
+        return "April";
+    }else if(bulan == 5){
+        return "Mei";
+    }else if(bulan == 6){
+        return "Juni";
+    }else if(bulan == 7){
+        return "Juli";
+    }else if(bulan == 8){
+        return "Agustus";
+    }else if(bulan == 9){
+        return "September";
+    }else if(bulan == 10){
+        return "Oktober";
+    }else if(bulan == 11){
+        return "November";
+    }else if(bulan == 12){
+        return "Desember";
+    }
+}
 
 struct dataUser
 {
@@ -23,7 +74,9 @@ void registerAcc()
     char namaLengkap[50];
     char username[40];
     char password[40];
-
+    printf("|| ================================================== ||\n");
+    printf("||                    Pendaftaran Akun                ||\n");
+    printf("|| ================================================== ||\n");
     printf("|| Nama Lengkap : ");
     scanf("%[^\n]", namaLengkap);
     getchar();
@@ -149,6 +202,7 @@ void tmbBiaya(struct dataUser user[10], int idxLogin, int option){
 }
 
 void pengeluaran(struct dataUser user[10], int idxLogin){
+    system("clear");
     fflush(stdin);
     int option;
     printf("|| ================================================== ||\n");
@@ -167,6 +221,7 @@ void pengeluaran(struct dataUser user[10], int idxLogin){
     printf("|| ================================================== ||\n");
     printf("|| Input Anda : ");
     scanf("%d", &option);
+    system("clear");
     switch(option){
         case 1 :
             tmbBiaya(user, idxLogin, 1);
@@ -201,7 +256,7 @@ void monthRecap(struct dataUser user[10], int idxLogin){
     system("clear");
     printf("|| ================================================== ||\n");
     printf("||                   Rekap Pengeluaran                ||\n");
-    printf("||                       Bulan Ini                    ||\n");
+    printf("||                     %s %d                  ||\n", bulanString(), thnHariIni());
     printf("|| ================================================== ||\n");
     printf("||                                                    ||\n");
     printf("|| Total Pengeluaran : Rp.%d\n", user[idxLogin].totalPengeluaran);
@@ -245,7 +300,8 @@ void monthRecap(struct dataUser user[10], int idxLogin){
     printf("||    No  |                   Action                  ||\n");
     printf("|| ================================================== ||\n");
     printf("||   [1]  | Lihat Rincian                             ||\n");
-    printf("||   [2]  | Keluar Program                            ||\n");
+    printf("||   [2]  | Kembali ke Menu                           ||\n");
+    printf("||   [3]  | Keluar Program                            ||\n");
     printf("|| ================================================== ||\n");
     printf("|| Input Anda [] : ");
     scanf("%d", &action);
@@ -290,6 +346,8 @@ void monthRecap(struct dataUser user[10], int idxLogin){
             }
             break;
         case 2 :
+            break;
+        case 3 :
             exit(0);
             break;
     }
@@ -301,6 +359,7 @@ void todayManage(struct dataUser user[10], int idxLogin){
     int action;
     printf("|| ================================================== ||\n");
     printf("||              Atur Keuangan Anda Hari Ini           ||\n");
+    printf("||                    %d %s %d                 ||\n", tglHariIni(), bulanString(), thnHariIni());
     printf("|| ================================================== ||\n");
     printf("||    No  |                   Action                  ||\n");
     printf("|| ================================================== ||\n");
@@ -324,13 +383,14 @@ void todayManage(struct dataUser user[10], int idxLogin){
 }
 
 void loginCheck(struct dataUser user[10], int idxLogin){
+    system("clear");
     fflush(stdin);
     char username[50];
     char password[50];
     char enter;
     fflush(stdin);
     printf("\n|| ================================================== ||\n");
-    printf("||                   Masuk ke akun anda!              ||\n");
+    printf("||                 Masuk ke akun anda!                ||\n");
     printf("|| ================================================== ||\n");
     printf("|| Username : ");
     scanf("%[^\n]%*c", username);
@@ -341,14 +401,17 @@ void loginCheck(struct dataUser user[10], int idxLogin){
     if(idxLogin != -1){
         system("clear");
         printf("|| ================================================== ||\n");
-        printf("||                      Login Sukses                  ||\n");
+        printf("||                     Login Sukses                   ||\n");
         printf("|| ================================================== ||\n");
+        printf("||                                                    ||\n");
         printf("|| Kamu masuk sebagai %s\n", user[idxLogin].namaLengkap);
-        printf("|| ================================================== ||\n");
-        printf("||             Tekan Enter Untuk Melanjutkan          ||\n");
-        printf("|| ================================================== ||\n");
-        scanf("%c", &enter);
+        printf("||                                                    ||\n");
         while(true){
+            fflush(stdin);
+            printf("|| ================================================== ||\n");
+            printf("||             Tekan Enter Untuk Melanjutkan          ||\n");
+            printf("|| ================================================== ||\n");
+            scanf("%c", &enter);
             todayManage(user, idxLogin);
         }
     }else{
@@ -367,7 +430,7 @@ void menu(struct dataUser user[10], int idxLogin){
     fflush(stdin);
     int action;
     printf("|| ================================================== ||\n");
-    printf("||                   Cash Flow Tracker                ||\n");
+    printf("||                  Cash Flow Tracker                 ||\n");
     printf("|| ================================================== ||\n");
     printf("||    No  |                   Action                  ||\n");
     printf("|| ================================================== ||\n");
