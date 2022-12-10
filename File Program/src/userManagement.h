@@ -1,9 +1,12 @@
 #include <stdlib.h>
 #include <stdbool.h>
 #include "formula.h"
+#include "inputValidation.h"
 #include <time.h>
 #include <stdio.h>
 #include <string.h>
+
+#define MAXPW 32
 
 int tglHariIni(){
     time_t t;
@@ -73,7 +76,10 @@ void registerAcc()
     fptr = fopen("database/account.txt", "a");
     char namaLengkap[50];
     char username[40];
-    char password[40];
+    char pw[MAXPW] = {0};
+    char *p = pw;
+    FILE *fp = stdin;
+    ssize_t nchr = 0;
     printf("|| ================================================== ||\n");
     printf("||                    Pendaftaran Akun                ||\n");
     printf("|| ================================================== ||\n");
@@ -90,9 +96,9 @@ void registerAcc()
     fputs("\n", fptr);
     fflush(stdin);
     printf("|| Password : ");
-    scanf("%s", password);
+    nchr = getpasswd (&p, MAXPW, '*', fp);
     getchar();
-    fputs(password, fptr);
+    fputs(pw, fptr);
     fputs("\n", fptr);
 
     for (int i = 0; i < 10; i++)
@@ -114,7 +120,7 @@ void readFile(struct dataUser user[10])
 {
     FILE *fptr;
     fptr = fopen("database/account.txt", "r");
-    for (int i = 0; i < 2; i++)
+    for (int i = 0; i < checkLines()/13; i++)
     {
         fscanf(fptr, "%[^\n]%*c", user[i].namaLengkap);
         fscanf(fptr, "%[^\n]%*c", user[i].username);
@@ -134,7 +140,7 @@ void readFile(struct dataUser user[10])
 }
 
 int idxSearch(struct dataUser user[10], char *username, char *password){
-    for(int i = 0; i < 3; i++){
+    for(int i = 0; i < checkLines()/13; i++){
         if(strcmp(user[i].username, username) == 0 && strcmp(user[i].password, password) == 0){
             return i;
         }
@@ -386,7 +392,10 @@ void loginCheck(struct dataUser user[10], int idxLogin){
     system("clear");
     fflush(stdin);
     char username[50];
-    char password[50];
+    char pw[MAXPW] = {0};
+    char *p = pw;
+    FILE *fp = stdin;
+    ssize_t nchr = 0;
     char enter;
     fflush(stdin);
     printf("\n|| ================================================== ||\n");
@@ -396,8 +405,8 @@ void loginCheck(struct dataUser user[10], int idxLogin){
     scanf("%[^\n]%*c", username);
     fflush(stdin);
     printf("|| Password : ");
-    scanf("%[^\n]%*c", password);
-    idxLogin = idxSearch(user, username, password);
+    nchr = getpasswd (&p, MAXPW, '*', fp);
+    idxLogin = idxSearch(user, username, pw);
     if(idxLogin != -1){
         system("clear");
         printf("|| ================================================== ||\n");
