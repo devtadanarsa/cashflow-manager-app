@@ -1,7 +1,6 @@
 <div>
   <h1 align="center">Program Cashflow Manager</h1>
-  <h4 align ="center">Program untuk melakukan tracking terhadap pengeluaran dan pemasukan sehari-hari pengguna dalam kurun waktu satu bulan.</h4>
-  <h4 align ="center">Program ini dibuat untuk menyelesaikan tugas besar mata kuliah Algoritma dan Pemrograman.</h4>
+  <h4 align ="center">Program untuk melakukan tracking terhadap pengeluaran dan pemasukan sehari-hari pengguna dalam kurun waktu satu bulan. Program ini dibuat untuk menyelesaikan tugas besar mata kuliah Algoritma dan Pemrograman.</h4>
 </div>
 <br>
 <h4>Anggota Kelompok :</h4>
