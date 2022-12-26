@@ -3,8 +3,57 @@
 #include <termios.h>
 #include <string.h>
 
-ssize_t getpasswd (char **pw, size_t sz, int mask, FILE *fp)
-{
+//Fungsi Validasi Integer (Catatan : Digunakan di dalam fungsi reVldInt())
+int validInt(int *var){
+	char buff[1024];
+	char cek;
+	fflush(stdin);
+	if(fgets(buff, sizeof(buff), stdin) != NULL){
+		if(sscanf(buff, "%d %c", var, &cek) == 1) {
+			return 1;
+		}
+	}
+    return 0;
+}
+
+//Fungsi Input Integer ke Dalam Fungsi validInt()
+void reVldInt(int *var, char *prompt){
+	while(1){
+		printf(prompt);
+		if(validInt(var)){
+            break;
+        }    
+	}
+}
+
+//Fungsi Validasi Float (Catatan : Digunakan di dalam fungsi reVldFloat())
+int validFloat(float *var){
+	char buff[1024];
+	char cek;
+	fflush(stdin);
+	if(fgets(buff, sizeof(buff), stdin) != NULL){
+		if(sscanf(buff, "%f %c", var, &cek) == 1) {
+			return 1;
+		}
+	}
+	return 0;
+}
+
+//Fungsi Input Float ke Dalam Fungsi validFloat()
+void reVldFloat(float *var, char *prompt){
+	while(1){
+		printf(prompt);
+		if(validFloat(var)){
+			break;
+			printf("Input hanya berupa angka!! \n");
+			printf("\n");
+        }    
+	}
+}
+
+//Fungsi Untuk Menutupi Inputan Password
+//Fungsi ini kami ambil dari sumber : https://stackoverflow.com/questions/6856635/hide-password-input-on-terminal
+ssize_t getpasswd (char **pw, size_t sz, int mask, FILE *fp){
     if (!pw || !sz || !fp) return -1;
     #ifdef MAXPW
         if (sz > MAXPW) sz = MAXPW;
