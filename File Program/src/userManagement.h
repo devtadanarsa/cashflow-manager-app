@@ -1,131 +1,154 @@
-#include <stdlib.h>
 #include <stdbool.h>
 #include "formula.h"
 #include "inputValidation.h"
-#include <time.h>
-#include <stdio.h>
-#include <string.h>
+#include "todayDate.h"
 
-#define MAXPW 32
-
-int tglHariIni(){
-    time_t t;
-    t = time(NULL);
-    struct tm tm = *localtime(&t);
-    return tm.tm_mday;
-}
-
-int blnHariIni(){
-    time_t t;
-    t = time(NULL);
-    struct tm tm = *localtime(&t);
-    return tm.tm_mon+1;
-}
-
-int thnHariIni(){
-    time_t t;
-    t = time(NULL);
-    struct tm tm = *localtime(&t);
-    return tm.tm_year+1900;
-}
-
-char *bulanString(){
-    int bulan = blnHariIni();
-    if(bulan == 1){
-        return "Januari";
-    }else if(bulan == 2){
-        return "Februari";
-    }else if(bulan == 3){
-        return "Maret";
-    }else if(bulan == 4){
-        return "April";
-    }else if(bulan == 5){
-        return "Mei";
-    }else if(bulan == 6){
-        return "Juni";
-    }else if(bulan == 7){
-        return "Juli";
-    }else if(bulan == 8){
-        return "Agustus";
-    }else if(bulan == 9){
-        return "September";
-    }else if(bulan == 10){
-        return "Oktober";
-    }else if(bulan == 11){
-        return "November";
-    }else if(bulan == 12){
-        return "Desember";
-    }
-}
-
-struct dataUser
-{
+struct dataUser{
     char namaLengkap[50];
     char username[40];
     char password[40];
     int saldo;
-    int jenisPengeluaran[8];
+    int jenisPengeluaran[8]; 
+    /* Keterangan Index
+    [0] = Makanan, [1] = Transportasi, [2] = Hiburan, [3] = Kesehatan, [4] = Rumah Tangga
+    [5] = Pendidikan, [6] = Pakaian, [7] = Lainnya 
+    */
     int totalPengeluaran;
+    int tglPengeluaran[32]; //Untuk Menyimpan Pengeluaran Setiap Tanggal!
 };
 
-void registerAcc()
+//Fungsi Untuk Mencari Index dari Akun
+int idxSearch(struct dataUser user[], char *username, char *password){
+    for(int i = 0; i < checkLines()/45; i++){
+        if(strcmp(user[i].username, username) == 0 && strcmp(user[i].password, password) == 0){
+            return i; //akun ditemukan
+        }
+    }
+    return -1; //akun tidak ditemukan
+}
+
+//Fungsi Untuk Mendaftar Akun
+void registerAcc(struct dataUser user[], int totalUser)
 {
     system("clear");
     fflush(stdin);
+    //Setup Variabel dan File
     FILE *fptr;
     fptr = fopen("database/account.txt", "a");
     char namaLengkap[50];
     char username[40];
-    char pw[MAXPW] = {0};
+    char pw[38] = {0};
     char *p = pw;
     FILE *fp = stdin;
     ssize_t nchr = 0;
-    printf("|| ================================================== ||\n");
-    printf("||                    Pendaftaran Akun                ||\n");
-    printf("|| ================================================== ||\n");
-    printf("|| Nama Lengkap : ");
-    scanf("%[^\n]", namaLengkap);
-    getchar();
-    fputs(namaLengkap, fptr);
-    fputs("\n", fptr);
-    fflush(stdin);
-    printf("|| Username : ");
-    scanf("%s", username);
-    getchar();
-    fputs(username, fptr);
-    fputs("\n", fptr);
+    //Input Nama Lengkap
+    while(true){
+        system("clear");
+        fflush(stdin);
+        printf("|| ================================================== ||\n");
+        printf("||                    Pendaftaran Akun                ||\n");
+        printf("|| ================================================== ||\n");
+        printf("|| Nama Lengkap : ");
+        scanf("%[^\n]", namaLengkap);
+        getchar();
+        //Validasi Nama Lengkap
+        int nameCheck = 0;
+        for(int i = 0; i < strlen(namaLengkap); i++){
+            if(isalpha(namaLengkap[i]) == 0 && namaLengkap[i] != ' '){
+                nameCheck = -1;
+            }
+        }
+        if(nameCheck == 0){
+            break;
+        }else{
+            system("clear");
+            printf("|| ================================================== ||\n");
+            printf("||                    Pendaftaran Akun                ||\n");
+            printf("|| ================================================== ||\n");
+            printf("|| Nama Lengkap : Nama Lengkap Tidak Valid!\n");
+            system("read -n 1 -s -p ''");
+            continue;
+        }
+    }
+
+    //Input Username
+    while(true){
+        system("clear");
+        fflush(stdin);
+        printf("|| ================================================== ||\n");
+        printf("||                    Pendaftaran Akun                ||\n");
+        printf("|| ================================================== ||\n");
+        printf("|| Nama Lengkap : %s\n", namaLengkap);
+        printf("|| Username : ");
+        scanf("%[^\n]", username);
+        getchar();
+        //Validasi Username
+        int usernameCheck = 0;
+        for(int i = 0; i < checkLines()/45; i++){
+            if(strcmp(user[i].username, username) == 0){
+                usernameCheck = -1;
+            }
+        }
+        for(int i = 0; i < strlen(username); i++){
+            if(username[i] == ' '){
+                usernameCheck = -1;
+            }
+        }
+        if(usernameCheck == 0){
+            break;
+        }else{
+            system("clear");
+            printf("|| ================================================== ||\n");
+            printf("||                    Pendaftaran Akun                ||\n");
+            printf("|| ================================================== ||\n");
+            printf("|| Nama Lengkap : %s\n", namaLengkap);
+            printf("|| Username : Username Tidak Valid!\n");
+            system("read -n 1 -s -p ''");
+            continue;
+        }
+    }
+
+    //Input Password
     fflush(stdin);
     printf("|| Password : ");
-    nchr = getpasswd (&p, MAXPW, '*', fp);
+    nchr = getpasswd (&p, 38, '*', fp);
     getchar();
+
+    //Menginput data ke dalam file
+    fputs(namaLengkap, fptr);
+    fputs("\n", fptr);
+    fputs(username, fptr);
+    fputs("\n", fptr);
     fputs(pw, fptr);
     fputs("\n", fptr);
-
-    for (int i = 0; i < 10; i++)
-    {
+    for (int i = 0; i < 10; i++){
+        fputs("0", fptr);
+        fputs("\n", fptr);
+    }
+    for(int i = 0; i < 32; i++){
         fputs("0", fptr);
         fputs("\n", fptr);
     }
     fclose(fptr);
-    char enter;
     printf("|| ================================================== ||\n");
     printf("||                Akun anda sudah siap!               ||\n");
     printf("||        Tekan Enter untuk keluar dari program       ||\n");
     printf("|| ================================================== ||\n");
-    scanf("%c", &enter);
+    system("read -n 1 -s -p ''");
     exit(0);
 }
 
-void readFile(struct dataUser user[10])
-{
+//Fungsi Untuk Membaca Data dari File 
+void readFile(struct dataUser user[], int totalUser){
     FILE *fptr;
     fptr = fopen("database/account.txt", "r");
-    for (int i = 0; i < checkLines()/13; i++)
-    {
+    //WARNING : HATI - HATI KALO MAU DIRUBAH!
+    //KODE DIBAWAH SUDAH SESUAI JIKA ACCOUNT.TXT TIDAK TERJADI PERUBAHAN STRUKTUR
+    for (int i = 0; i < totalUser; i++){
+        char digitUang[10];
         fscanf(fptr, "%[^\n]%*c", user[i].namaLengkap);
         fscanf(fptr, "%[^\n]%*c", user[i].username);
         fscanf(fptr, "%[^\n]%*c", user[i].password);
-        char digitUang[10];
         fscanf(fptr, "%[^\n]%*c", digitUang);
         user[i].saldo = atoi(digitUang);
         for (int j = 0; j < 8; j++)
@@ -135,24 +158,22 @@ void readFile(struct dataUser user[10])
         }
         fscanf(fptr, "%[^\n]%*c", digitUang);
         user[i].totalPengeluaran = atoi(digitUang);
+        for(int j = 0; j < 32; j++){
+            fscanf(fptr, "%[^\n]%*c", digitUang);
+            user[i].tglPengeluaran[j] = atoi(digitUang);
+        }
     }
     fclose(fptr);
 }
 
-int idxSearch(struct dataUser user[10], char *username, char *password){
-    for(int i = 0; i < checkLines()/13; i++){
-        if(strcmp(user[i].username, username) == 0 && strcmp(user[i].password, password) == 0){
-            return i;
-        }
-    }
-    return -1;
-}
-
-void writeFile(struct dataUser user[10]){
+//Fungsi Untuk Menulis Kembali File Setelah Terjadi Perubahan
+void writeFile(struct dataUser user[], int totalUser){
     FILE *fptr;
     fptr = fopen("database/account.txt", "w");
     char angka[10];
-    for (int i = 0; i < 2; i++){
+    //WARNING : HATI - HATI KALO MAU DIRUBAH!!! KARENA AKAN BERDAMPAK KE ACCOUNT.TXT
+    //STRUKTUR FILE ACCOUNT.TXT : TIAP DATA DIPISAH OLEH BARIS
+    for (int i = 0; i < totalUser; i++){
         fputs(user[i].namaLengkap, fptr);
         fputs("\n", fptr);
         fputs(user[i].username, fptr);
@@ -170,18 +191,26 @@ void writeFile(struct dataUser user[10]){
         sprintf(angka, "%d", user[i].totalPengeluaran);
         fputs(angka, fptr);
         fputs("\n", fptr);
+        for(int j = 0; j < 32; j++){
+            char nomorString[15];
+            sprintf(nomorString, "%d", user[i].tglPengeluaran[j]);
+            fputs(nomorString, fptr);
+            fputs("\n", fptr);
+        }
     }
     fclose(fptr);
 }
 
-void tmbBiaya(struct dataUser user[10], int idxLogin, int option){
+//Fungsi Penambahan Pengeluaran
+void tmbBiaya(struct dataUser user[], int idxLogin, int option, int totalUser){
     fflush(stdin);
     int cost;
     printf("|| ================================================== ||\n");
     printf("||                Biaya Yang Anda Keluarkan           ||\n");
     printf("|| ================================================== ||\n");
-    printf("|| Input Anda : Rp.");
-    scanf("%d", &cost);
+    //Input Nominal Pengeluaran
+    //Nominal Pengeluaran akan Dimasukkan Sesuai Index Jenis Pengeluaran
+    reVldInt(&cost, "|| Input Anda : Rp.");
     if(option == 1){
         user[idxLogin].jenisPengeluaran[0] += cost;
     }else if(option == 2){
@@ -199,15 +228,47 @@ void tmbBiaya(struct dataUser user[10], int idxLogin, int option){
     }else if(option == 8){
         user[idxLogin].jenisPengeluaran[7] += cost;
     }
+    //Melakukan Pembaruan Terhadap Tgl Pengeluaran, Saldo Tersisa, dan Total Pengeluaran
+    user[idxLogin].tglPengeluaran[tglHariIni() - 1] += cost;
+    user[idxLogin].saldo -= cost;
     user[idxLogin].totalPengeluaran = 0;
     for(int i = 0; i < 8; i++){
         user[idxLogin].totalPengeluaran += user[idxLogin].jenisPengeluaran[i];
     }
-    user[idxLogin].saldo -= user[idxLogin].totalPengeluaran;
-    writeFile(user);
+    writeFile(user, totalUser);
+    printf("|| ================================================== ||\n");
+    printf("||               Pembaruan Telah Dicatat              ||\n");
+    printf("||            Tekan Enter untuk Melanjutkan           ||\n");
+    printf("|| ================================================== ||\n");
+    system("read -n 1 -s -p ''");
 }
 
-void pengeluaran(struct dataUser user[10], int idxLogin){
+//Fungsi Untuk Menambah Pemasukan
+void pemasukan(struct dataUser user[], int idxLogin, int totalUser){
+    system("clear");
+    fflush(stdin);
+    //Setup Variabel
+    int pemasukan;
+    char inputKeterangan[1000];
+    printf("|| ================================================== ||\n");
+    printf("||                Pemasukan Anda Hari Ini             ||\n");
+    printf("||                   %d %s %d                 ||\n", tglHariIni(), bulanString(), thnHariIni());
+    printf("|| ================================================== ||\n");
+    //Input Pemasukan
+    reVldInt(&pemasukan, "|| Pemasukan : Rp.");
+    fflush(stdin);
+    user[idxLogin].saldo += pemasukan;
+    writeFile(user, totalUser);
+    printf("|| ================================================== ||\n");
+    printf("||               Pembaruan Telah Dicatat              ||\n");
+    printf("||            Tekan Enter untuk Melanjutkan           ||\n");
+    printf("|| ================================================== ||\n");
+    system("read -n 1 -s -p ''");
+    
+}
+
+//Fungsi Menu Pengeluaran
+void pengeluaran(struct dataUser user[], int idxLogin, int totalUser){
     system("clear");
     fflush(stdin);
     int option;
@@ -225,116 +286,124 @@ void pengeluaran(struct dataUser user[10], int idxLogin){
     printf("||   [7]  | Pakaian                                   ||\n");
     printf("||   [8]  | Lainnya                                   ||\n");
     printf("|| ================================================== ||\n");
-    printf("|| Input Anda : ");
-    scanf("%d", &option);
+    reVldInt(&option, "|| Input Anda [] : ");
     system("clear");
     switch(option){
         case 1 :
-            tmbBiaya(user, idxLogin, 1);
+            tmbBiaya(user, idxLogin, 1, totalUser);
             break;
         case 2 :
-            tmbBiaya(user, idxLogin, 2);
+            tmbBiaya(user, idxLogin, 2, totalUser);
             break;
         case 3 :
-            tmbBiaya(user, idxLogin, 3);
+            tmbBiaya(user, idxLogin, 3, totalUser);
             break;
         case 4 :
-            tmbBiaya(user, idxLogin, 4);
+            tmbBiaya(user, idxLogin, 4, totalUser);
             break;
         case 5 : 
-            tmbBiaya(user, idxLogin, 5);
+            tmbBiaya(user, idxLogin, 5, totalUser);
             break;
         case 6 :
-            tmbBiaya(user, idxLogin, 6);
+            tmbBiaya(user, idxLogin, 6, totalUser);
             break;
         case 7 :
-            tmbBiaya(user, idxLogin, 7);
+            tmbBiaya(user, idxLogin, 7, totalUser);
             break;
         case 8 :
-            tmbBiaya(user, idxLogin, 8);
+            tmbBiaya(user, idxLogin, 8, totalUser);
             break;
-
+        default :
+            pengeluaran(user, idxLogin, totalUser);
+            break;
     }
 }
 
-void monthRecap(struct dataUser user[10], int idxLogin){
+//Fungsi Rekapan Bulanan
+void monthRecap(struct dataUser user[], int idxLogin){
     fflush(stdin);
     system("clear");
-    printf("|| ================================================== ||\n");
-    printf("||                   Rekap Pengeluaran                ||\n");
-    printf("||                     %s %d                  ||\n", bulanString(), thnHariIni());
-    printf("|| ================================================== ||\n");
-    printf("||                                                    ||\n");
-    printf("|| Total Pengeluaran : Rp.%d\n", user[idxLogin].totalPengeluaran);
-    printf("|| Sisa Saldo : Rp.%d\n", user[idxLogin].saldo);
-    printf("||                                                    ||\n");
-    printf("|| ================================================== ||\n");
-    printf("||                 Persentase Pengeluaran             ||\n");
-    printf("||                                                    ||\n");
+    //Setup Variabel (Digunakan untuk men-sorting pengeluaran, sehingga pengeluaran yang terbanyak ditampilkan terlebih dahulu)
     int penandaCtg[] = {0, 1, 2, 3, 4, 5, 6, 7};
     bubbleSort(user[idxLogin].jenisPengeluaran, penandaCtg);
+    //Catatan : Hanya Menampilkan Jika Pengeluaran > 0
+    printf("|| ==================================================================================================== ||\n");
+    printf("||                                             Rekap Pengeluaran                                        ||\n");
+    printf("||                                               %s %d                                          ||\n", bulanString(), thnHariIni());
+    printf("|| ==================================================================================================== ||\n");
+    printf("||                                                                                                      ||\n");
+    printf("||                                      Total Pengeluaran : Rp.%d                                   ||\n", user[idxLogin].totalPengeluaran);
+    printf("||                                                                                                      ||\n");
+    printf("|| ==================================================================================================== ||\n");
+    printf("||                Persentase Pengeluaran              ||                Rincian Pengeluaran             ||\n");
+    printf("|| ==================================================================================================== ||\n");
     for(int i = 0; i < 8; i++){
         if(user[idxLogin].jenisPengeluaran[i] > 0){
             if(penandaCtg[i] == 0){
-                printf("|| %.1f%c Makanan dan Minuman\n", persentase(user[idxLogin].jenisPengeluaran[i], user[idxLogin].totalPengeluaran), '%');
+                printf("|| Makanan & Minuman     %.1f%c                        || Makanan & Minuman  : Rp.%d                 ||\n", persentase(user[idxLogin].jenisPengeluaran[i], user[idxLogin].totalPengeluaran), '%', user[idxLogin].jenisPengeluaran[i]);
             }else if(penandaCtg[i] == 1){
-                printf("|| %.1f%c Transportasi\n", persentase(user[idxLogin].jenisPengeluaran[i], user[idxLogin].totalPengeluaran), '%');
+                printf("|| Transportasi          %.1f%c                        || Transportasi       : Rp.%d                 ||\n", persentase(user[idxLogin].jenisPengeluaran[i], user[idxLogin].totalPengeluaran), '%', user[idxLogin].jenisPengeluaran[i]);
             }else if(penandaCtg[i] == 2){
-                printf("|| %.1f%c Hiburan atau Rekreasi\n", persentase(user[idxLogin].jenisPengeluaran[i], user[idxLogin].totalPengeluaran), '%');
+                printf("|| Hiburan & Rekreasi    %.1f%c                        || Hiburan & Rekreasi : Rp.%d                 ||\n", persentase(user[idxLogin].jenisPengeluaran[i], user[idxLogin].totalPengeluaran), '%', user[idxLogin].jenisPengeluaran[i]);
             }else if(penandaCtg[i] == 3){
-                printf("|| %.1f%c Biaya Kesehatan\n", persentase(user[idxLogin].jenisPengeluaran[i], user[idxLogin].totalPengeluaran), '%');
+                printf("|| Biaya Kesehatan       %.1f%c                        || Biaya Kesehatan    : Rp.%d                 ||\n", persentase(user[idxLogin].jenisPengeluaran[i], user[idxLogin].totalPengeluaran), '%', user[idxLogin].jenisPengeluaran[i]);
             }else if(penandaCtg[i] == 4){
-                printf("|| %.1f%c Biaya Rumah Tangga\n", persentase(user[idxLogin].jenisPengeluaran[i], user[idxLogin].totalPengeluaran), '%');
+                printf("|| Biaya Rumah Tangga    %.1f%c                        || Rumah Tangga       : Rp.%d                 ||\n", persentase(user[idxLogin].jenisPengeluaran[i], user[idxLogin].totalPengeluaran), '%', user[idxLogin].jenisPengeluaran[i]);
             }else if(penandaCtg[i] == 5){
-                printf("|| %.1f%c Biaya Pendidikan\n", persentase(user[idxLogin].jenisPengeluaran[i], user[idxLogin].totalPengeluaran), '%');
+                printf("|| Biaya Pendidikan      %.1f%c                        || Biaya Pendidikan   : Rp.%d                 ||\n", persentase(user[idxLogin].jenisPengeluaran[i], user[idxLogin].totalPengeluaran), '%', user[idxLogin].jenisPengeluaran[i]);
             }else if(penandaCtg[i] == 6){
-                printf("|| %.1f%c Pakaian\n", persentase(user[idxLogin].jenisPengeluaran[i], user[idxLogin].totalPengeluaran), '%');
+                printf("|| Pakaian               %.1f%c                        || Pakaian            : Rp.%d                 ||\n", persentase(user[idxLogin].jenisPengeluaran[i], user[idxLogin].totalPengeluaran), '%', user[idxLogin].jenisPengeluaran[i]);
             }else if(penandaCtg[i] == 7){
-                printf("|| %.1f%c Lainnya\n", persentase(user[idxLogin].jenisPengeluaran[i], user[idxLogin].totalPengeluaran), '%');
+                printf("|| Lainnya               %.1f%c                        || Lainnya            : Rp.%d                 ||\n", persentase(user[idxLogin].jenisPengeluaran[i], user[idxLogin].totalPengeluaran), '%', user[idxLogin].jenisPengeluaran[i]);
             }
         }else{
             continue;
         }
     }
-    printf("|| ================================================== ||\n");
-    printf("||             Tekan Enter Untuk Melanjutkan          ||\n");
-    printf("|| ================================================== ||\n");
-    char enter;
-    scanf("%c", &enter);
+    printf("||                                                    ||                                                ||\n");
+    printf("|| ==================================================================================================== ||\n");
+    printf("||                                                                                                      ||\n");
+    printf("||                                          Sisa Saldo : Rp.%d                                     ||\n", user[idxLogin].saldo);
+    printf("||                                                                                                      ||\n");
+    printf("|| ==================================================================================================== ||\n");
+    system("read -n 1 -s -p ''");
+
+    //Menu Pilihan
     int action;
     printf("|| ================================================== ||\n");
     printf("||    No  |                   Action                  ||\n");
     printf("|| ================================================== ||\n");
-    printf("||   [1]  | Lihat Rincian                             ||\n");
+    printf("||   [1]  | Lihat Riwayat Pengeluaran                 ||\n");
     printf("||   [2]  | Kembali ke Menu                           ||\n");
     printf("||   [3]  | Keluar Program                            ||\n");
     printf("|| ================================================== ||\n");
-    printf("|| Input Anda [] : ");
-    scanf("%d", &action);
+    reVldInt(&action, "|| Input Anda [] : ");
+    system("clear");
     switch(action){
         case 1 :
+            //Menampilkan Riwayat Pengeluaran User Berdasarkan Tanggal
+            //Catatan : Hanya Ditampilkan Jika Pada Tanggal Tersebut, Pengeluaran > 0
             printf("|| ================================================== ||\n");
-            printf("||                   Rincian Pengeluaran              ||\n");
+            printf("||                Riwayat Pengeluaran                 ||\n");
             printf("|| ================================================== ||\n");
-            for(int i = 0; i < 8; i++){
-                if(penandaCtg[i] == 0){
-                    printf("|| Makanan dan Minuman : Rp.%d\n", user[idxLogin].jenisPengeluaran[i]);
-                }else if(penandaCtg[i] == 1){
-                    printf("|| Transportasi : Rp.%d\n", user[idxLogin].jenisPengeluaran[i]);
-                }else if(penandaCtg[i] == 2){
-                    printf("|| Hiburan & Rekreasi : Rp.%d\n", user[idxLogin].jenisPengeluaran[i]);
-                }else if(penandaCtg[i] == 3){
-                    printf("|| Biaya Kesehatan : Rp.%d\n", user[idxLogin].jenisPengeluaran[i]);
-                }else if(penandaCtg[i] == 4){
-                    printf("|| Biaya Rumah Tangga : Rp.%d\n", user[idxLogin].jenisPengeluaran[i]);
-                }else if(penandaCtg[i] == 5){
-                    printf("|| Biaya Pendidikan : Rp.%d\n", user[idxLogin].jenisPengeluaran[i]);
-                }else if(penandaCtg[i] == 6){
-                    printf("|| Pakaian : Rp.%d\n", user[idxLogin].jenisPengeluaran[i]);
-                }else if(penandaCtg[i] == 7){
-                    printf("|| Lainnya : Rp.%d\n", user[idxLogin].jenisPengeluaran[i]);
+            printf("||         Tanggal        ||       Pengeluaran        ||\n");
+            printf("|| ================================================== ||\n");
+            for(int i = 0; i < 32; i++){
+                if(user[idxLogin].tglPengeluaran[i] > 0){
+                    //If Else disini hanya digunakan untuk merapikan tabel
+                    if(i < 10){
+                        printf("|| %d %s             || Rp.%d                ||\n", i+1, bulanString(), user[idxLogin].tglPengeluaran[i]);
+                    }else{
+                        printf("|| %d %s            || Rp.%d                ||\n", i+1, bulanString(), user[idxLogin].tglPengeluaran[i]);
+                    }
                 }
             }
+            printf("|| ================================================== ||\n");
+            printf("||          Total         || Rp.%d                ||\n", user[idxLogin]. totalPengeluaran);
+            printf("|| ================================================== ||\n");
+
+            //Menu Pilihan
+            system("read -n 1 -s -p ''");
             fflush(stdin);
             printf("|| ================================================== ||\n");
             printf("||    No  |                   Action                  ||\n");
@@ -342,7 +411,7 @@ void monthRecap(struct dataUser user[10], int idxLogin){
             printf("||   [1]  | Kembali ke Menu                           ||\n");
             printf("||   [2]  | Keluar Program                            ||\n");
             printf("|| ================================================== ||\n");
-            scanf("%d", &action);
+            reVldInt(&action, "|| Input Anda [] : ");
             switch (action){
                 case 1 :
                     break;
@@ -359,13 +428,14 @@ void monthRecap(struct dataUser user[10], int idxLogin){
     }
 }
 
-void todayManage(struct dataUser user[10], int idxLogin){
+//Fungsi Perubahan pada Hari Ini
+void todayManage(struct dataUser user[], int idxLogin, int totalUser){
     system("clear");
     fflush(stdin);
     int action;
     printf("|| ================================================== ||\n");
-    printf("||              Atur Keuangan Anda Hari Ini           ||\n");
-    printf("||                    %d %s %d                 ||\n", tglHariIni(), bulanString(), thnHariIni());
+    printf("||             Atur Keuangan Anda Hari Ini            ||\n");
+    printf("||                   %d %s %d                 ||\n", tglHariIni(), bulanString(), thnHariIni());
     printf("|| ================================================== ||\n");
     printf("||    No  |                   Action                  ||\n");
     printf("|| ================================================== ||\n");
@@ -377,35 +447,48 @@ void todayManage(struct dataUser user[10], int idxLogin){
     printf("|| Input Anda : ");
     scanf("%d", &action);
     switch(action){
+        case 1 :
+            pemasukan(user, idxLogin, totalUser);
+            break;
         case 2 :
-            pengeluaran(user, idxLogin);
+            pengeluaran(user, idxLogin, totalUser);
             break;
         case 3 :
             monthRecap(user, idxLogin);
             break;
         case 4 :
             exit(0);
+        default :
+            todayManage(user, idxLogin, totalUser);
+            break;
     }
 }
 
-void loginCheck(struct dataUser user[10], int idxLogin){
+//Fungsi Login
+void loginCheck(struct dataUser user[], int idxLogin, int totalUser){
     system("clear");
     fflush(stdin);
+    //Setup Variabel
     char username[50];
-    char pw[MAXPW] = {0};
+    char pw[38] = {0};
     char *p = pw;
     FILE *fp = stdin;
     ssize_t nchr = 0;
-    char enter;
-    fflush(stdin);
+
     printf("\n|| ================================================== ||\n");
     printf("||                 Masuk ke akun anda!                ||\n");
     printf("|| ================================================== ||\n");
+
+    //Input Username
     printf("|| Username : ");
     scanf("%[^\n]%*c", username);
     fflush(stdin);
+
+    //Input Password
     printf("|| Password : ");
-    nchr = getpasswd (&p, MAXPW, '*', fp);
+    nchr = getpasswd (&p, 38, '*', fp);
+
+    //Mencari Akun di dalam Database
     idxLogin = idxSearch(user, username, pw);
     if(idxLogin != -1){
         system("clear");
@@ -415,27 +498,27 @@ void loginCheck(struct dataUser user[10], int idxLogin){
         printf("||                                                    ||\n");
         printf("|| Kamu masuk sebagai %s\n", user[idxLogin].namaLengkap);
         printf("||                                                    ||\n");
+        printf("|| ================================================== ||\n");
+        system("read -n 1 -s -p ''");
         while(true){
             fflush(stdin);
-            printf("|| ================================================== ||\n");
-            printf("||             Tekan Enter Untuk Melanjutkan          ||\n");
-            printf("|| ================================================== ||\n");
-            scanf("%c", &enter);
-            todayManage(user, idxLogin);
+            todayManage(user, idxLogin, totalUser);
         }
     }else{
         system("clear");
         printf("|| ================================================== ||\n");
-        printf("||                      Login Gagal                   ||\n");
+        printf("||                     Login Gagal                    ||\n");
         printf("||                                                    ||\n");
-        printf("||               Tekan Enter Untuk Mengulang          ||\n");
+        printf("||              Tekan Enter Untuk Mengulang           ||\n");
         printf("|| ================================================== ||\n");
-        scanf("%c", &enter);
-        loginCheck(user, idxLogin);
+        system("read -n 1 -s -p ''");
+        loginCheck(user, idxLogin, totalUser);
     }
 }
 
-void menu(struct dataUser user[10], int idxLogin){
+//Fungsi Menu Awal
+void menu(struct dataUser user[], int idxLogin, int totalUser){
+    system("clear");
     fflush(stdin);
     int action;
     printf("|| ================================================== ||\n");
@@ -446,14 +529,16 @@ void menu(struct dataUser user[10], int idxLogin){
     printf("||   [1]  | Masuk                                     ||\n");
     printf("||   [2]  | Daftar                                    ||\n");
     printf("|| ================================================== ||\n");
-    printf("|| Input Anda [] : ");
-    scanf("%d", &action);
+    reVldInt(&action, "|| Input Anda [] : ");
     switch(action){
         case 1 :
-            loginCheck(user, idxLogin);
+            loginCheck(user, idxLogin, totalUser);
             break;
         case 2 :
-            registerAcc();
+            registerAcc(user, totalUser);
+            break;
+        default :
+            menu(user, idxLogin, totalUser);
             break;
     }
 }
