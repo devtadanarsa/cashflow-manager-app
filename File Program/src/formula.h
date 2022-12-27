@@ -30,11 +30,11 @@ void bubbleSort(int arr[], int arrPenanda[]){
 
 //Fungsi Untuk Menghitung Banyaknya Baris
 //Pada File account.txt
-int checkLines(){
+int checkLines(char *fileDirectory){
     FILE *fptr;
     char ch;
     int lines = 1;
-    fptr = fopen("database/account.txt", "r");
+    fptr = fopen(fileDirectory, "r");
     if(fptr == NULL){
         printf("Unable to open file");
     }
