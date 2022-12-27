@@ -19,7 +19,7 @@ struct dataUser{
 
 //Fungsi Untuk Mencari Index dari Akun
 int idxSearch(struct dataUser user[], char *username, char *password){
-    for(int i = 0; i < checkLines()/45; i++){
+    for(int i = 0; i < checkLines("database/account.txt")/45; i++){
         if(strcmp(user[i].username, username) == 0 && strcmp(user[i].password, password) == 0){
             return i; //akun ditemukan
         }
@@ -84,7 +84,7 @@ void registerAcc(struct dataUser user[], int totalUser)
         getchar();
         //Validasi Username
         int usernameCheck = 0;
-        for(int i = 0; i < checkLines()/45; i++){
+        for(int i = 0; i < checkLines("database/account.txt")/45; i++){
             if(strcmp(user[i].username, username) == 0){
                 usernameCheck = -1;
             }
@@ -212,21 +212,206 @@ void tmbBiaya(struct dataUser user[], int idxLogin, int option, int totalUser){
     //Nominal Pengeluaran akan Dimasukkan Sesuai Index Jenis Pengeluaran
     reVldInt(&cost, "|| Input Anda : Rp.");
     if(option == 1){
+        //Deklarasi variabel
+        FILE *fileMakanan = fopen("database/daftarMkn.txt", "a");
+        char namaMakanan[100], harga[15], tanggal[3], idxAkun[4];
+        sprintf(idxAkun, "%d", idxLogin);
+        sprintf(harga, "%d", cost);
+        sprintf(tanggal, "%d", tglHariIni());
+
+        //Program Input Output
         user[idxLogin].jenisPengeluaran[0] += cost;
+        printf("|| Nama Makanan : ");
+        scanf("%[^\n]", namaMakanan);
+        getchar();
+
+        //Menulis ke Dalam File
+        fputs(idxAkun, fileMakanan);
+        fputs("\n", fileMakanan);
+        fputs(tanggal, fileMakanan);
+        fputs("\n", fileMakanan);
+        fputs(namaMakanan, fileMakanan);
+        fputs("\n", fileMakanan);
+        fputs(harga, fileMakanan);
+        fputs("\n", fileMakanan);
+        fclose(fileMakanan);
     }else if(option == 2){
+        //Deklarasi Variabel
+        FILE *fileTransport = fopen("database/daftarTransport.txt", "a");
+        char deskripsi[100], harga[15], tanggal[3], idxAkun[4];
+        sprintf(idxAkun, "%d", idxLogin);
+        sprintf(harga, "%d", cost);
+        sprintf(tanggal, "%d", tglHariIni());
+
+        //Program Input Output
         user[idxLogin].jenisPengeluaran[1] += cost;
+        printf("|| Nama Kebutuhan : ");
+        scanf("%[^\n]", deskripsi);
+        getchar();
+
+        //Menulis ke Dalam File
+        fputs(idxAkun, fileTransport);
+        fputs("\n", fileTransport);
+        fputs(tanggal, fileTransport);
+        fputs("\n", fileTransport);
+        fputs(deskripsi, fileTransport);
+        fputs("\n", fileTransport);
+        fputs(harga, fileTransport);
+        fputs("\n", fileTransport);
+        fclose(fileTransport);
     }else if(option == 3){
+        //Deklrasi Variabel
+        FILE *fileHiburan = fopen("database/daftarHiburan.txt", "a");
+        char deskripsi[100], harga[15], tanggal[3], idxAkun[4];
+        sprintf(idxAkun, "%d", idxLogin);
+        sprintf(harga, "%d", cost);
+        sprintf(tanggal, "%d", tglHariIni());
+
+        //Program Input Output
         user[idxLogin].jenisPengeluaran[2] += cost;
+        printf("|| ================================================== ||\n");
+        printf("|| Nama Hiburan : ");
+        scanf("%[^\n]", deskripsi);
+        getchar();
+
+        //Menulis ke Dalam File
+        fputs(idxAkun, fileHiburan);
+        fputs("\n", fileHiburan);
+        fputs(tanggal, fileHiburan);
+        fputs("\n", fileHiburan);
+        fputs(deskripsi, fileHiburan);
+        fputs("\n", fileHiburan);
+        fputs(harga, fileHiburan);
+        fputs("\n", fileHiburan);
+        fclose(fileHiburan);
+
     }else if(option == 4){
+        //Deklarasi Variabel
+        FILE *fileKesehatan = fopen("database/daftarKesehatan.txt", "a");
+        char deskripsi[100], harga[15], tanggal[3], idxAkun[4];
+        sprintf(idxAkun, "%d", idxLogin);
+        sprintf(harga, "%d", cost);
+        sprintf(tanggal, "%d", tglHariIni());
+
+        //Program Input Output
         user[idxLogin].jenisPengeluaran[3] += cost;
+        printf("|| ================================================== ||\n");
+        printf("|| Deskripsi : ");
+        scanf("%[^\n]", deskripsi);
+        getchar();
+
+        //Menulis ke Dalam File
+        fputs(idxAkun, fileKesehatan);
+        fputs("\n", fileKesehatan);
+        fputs(tanggal, fileKesehatan);
+        fputs("\n", fileKesehatan);
+        fputs(deskripsi, fileKesehatan);
+        fputs("\n", fileKesehatan);
+        fputs(harga, fileKesehatan);
+        fputs("\n", fileKesehatan);
+        fclose(fileKesehatan);
     }else if(option == 5){
+        //Deklarasi Variabel
+        FILE *fileRT = fopen("database/daftarRumahTangga.txt", "a");
+        char deskripsi[100], harga[15], tanggal[3], idxAkun[4];
+        sprintf(idxAkun, "%d", idxLogin);
+        sprintf(harga, "%d", cost);
+        sprintf(tanggal, "%d", tglHariIni());
+
+        //Program Input Output
         user[idxLogin].jenisPengeluaran[4] += cost;
+        printf("|| ================================================== ||\n");
+        printf("|| Deskripsi : ");
+        scanf("%[^\n]", deskripsi);
+        getchar();
+
+        //Menulis ke Dalam File
+        fputs(idxAkun, fileRT);
+        fputs("\n", fileRT);
+        fputs(tanggal, fileRT);
+        fputs("\n", fileRT);
+        fputs(deskripsi, fileRT);
+        fputs("\n", fileRT);
+        fputs(harga, fileRT);
+        fputs("\n", fileRT);
+        fclose(fileRT);
     }else if(option == 6){
+        //Deklarasi Variabel
+        FILE *filePendidikan = fopen("database/daftarPendidikan.txt", "a");
+        char deskripsi[100], harga[15], tanggal[3], idxAkun[4];
+        sprintf(idxAkun, "%d", idxLogin);
+        sprintf(harga, "%d", cost);
+        sprintf(tanggal, "%d", tglHariIni());
+
+        //Program Input Output
         user[idxLogin].jenisPengeluaran[5] += cost;
+        printf("|| ================================================== ||\n");
+        printf("|| Deskripsi : ");
+        scanf("%[^\n]", deskripsi);
+        getchar();
+
+        //Menulis ke Dalam File
+        fputs(idxAkun, filePendidikan);
+        fputs("\n", filePendidikan);
+        fputs(tanggal, filePendidikan);
+        fputs("\n", filePendidikan);
+        fputs(deskripsi, filePendidikan);
+        fputs("\n", filePendidikan);
+        fputs(harga, filePendidikan);
+        fputs("\n", filePendidikan);
+        fclose(filePendidikan);
+
     }else if(option == 7){
+        //Deklarasi Variabel
+        FILE *filePakaian = fopen("database/daftarPakaian.txt", "a");
+        char deskripsi[100], harga[15], tanggal[3], idxAkun[4];
+        sprintf(idxAkun, "%d", idxLogin);
+        sprintf(harga, "%d", cost);
+        sprintf(tanggal, "%d", tglHariIni());
+
+        //Program Input Output
         user[idxLogin].jenisPengeluaran[6] += cost;
+        printf("|| ================================================== ||\n");
+        printf("|| Deskripsi : ");
+        scanf("%[^\n]", deskripsi);
+        getchar();
+
+        //Menulis ke Dalam File
+        fputs(idxAkun, filePakaian);
+        fputs("\n", filePakaian);
+        fputs(tanggal, filePakaian);
+        fputs("\n", filePakaian);
+        fputs(deskripsi, filePakaian);
+        fputs("\n", filePakaian);
+        fputs(harga, filePakaian);
+        fputs("\n", filePakaian);
+        fclose(filePakaian);
+
     }else if(option == 8){
+        //Deklarasi Variabel
+        FILE *fileLainnya = fopen("database/daftarLainnya.txt", "a");
+        char deskripsi[100], harga[15], tanggal[3], idxAkun[4];
+        sprintf(idxAkun, "%d", idxLogin);
+        sprintf(harga, "%d", cost);
+        sprintf(tanggal, "%d", tglHariIni());
+
+        //Program Input Output
         user[idxLogin].jenisPengeluaran[7] += cost;
+        printf("|| ================================================== ||\n");
+        printf("|| Deskripsi : ");
+        scanf("%[^\n]", deskripsi);
+        getchar();
+
+        //Menulis ke Dalam File
+        fputs(idxAkun, fileLainnya);
+        fputs("\n", fileLainnya);
+        fputs(tanggal, fileLainnya);
+        fputs("\n", fileLainnya);
+        fputs(deskripsi, fileLainnya);
+        fputs("\n", fileLainnya);
+        fputs(harga, fileLainnya);
+        fputs("\n", fileLainnya);
+        fclose(fileLainnya);
     }
     //Melakukan Pembaruan Terhadap Tgl Pengeluaran, Saldo Tersisa, dan Total Pengeluaran
     user[idxLogin].tglPengeluaran[tglHariIni() - 1] += cost;
@@ -249,7 +434,6 @@ void pemasukan(struct dataUser user[], int idxLogin, int totalUser){
     fflush(stdin);
     //Setup Variabel
     int pemasukan;
-    char inputKeterangan[1000];
     printf("|| ================================================== ||\n");
     printf("||                Pemasukan Anda Hari Ini             ||\n");
     printf("||                   %d %s %d                 ||\n", tglHariIni(), bulanString(), thnHariIni());
@@ -319,14 +503,297 @@ void pengeluaran(struct dataUser user[], int idxLogin, int totalUser){
     }
 }
 
+
+void readHarian(struct dataUser user[], int tanggal, int idxLogin){
+    system("clear");
+    printf("|| ================================================== ||\n");
+    printf("||                   Rekapan Pengeluaran              ||\n");
+    printf("||                       %d %s                  ||\n", tanggal, bulanString());
+    printf("|| ================================================== ||\n");
+    char deskripsi[30], inputAngka[15], idxAkun[3];
+    int harga, tglFile, indexLogin;
+    FILE * fptr;
+
+    //Membuka File Biaya Makanan
+    //Menghasilkan Output 
+    fptr = fopen("database/daftarMkn.txt", "r");
+    for(size_t i = 0; i < checkLines("database/daftarMkn.txt")/4; i++){
+        fscanf(fptr, "%[^\n]%*c", idxAkun);
+        indexLogin = atoi(idxAkun);
+        fscanf(fptr, "%[^\n]%*c", inputAngka);
+        tglFile = atoi(inputAngka);
+        fscanf(fptr, "%[^\n]%*c", deskripsi);
+        fscanf(fptr, "%[^\n]%*c", inputAngka);
+        harga = atoi(inputAngka);
+        if((tglFile != tanggal) || (indexLogin != idxLogin)){
+            continue;
+        }else{
+            printf("|| %s : Rp.%d\n", deskripsi, harga);
+        }
+    }
+    fclose(fptr);
+
+    //Membuka File Biaya Transport
+    //Menghasilkan Output
+    fptr = fopen("database/daftarTransport.txt", "r");
+    for(size_t i = 0; i < checkLines("database/daftarTransport.txt")/4; i++){
+        fscanf(fptr, "%[^\n]%*c", idxAkun);
+        indexLogin = atoi(idxAkun);
+        fscanf(fptr, "%[^\n]%*c", inputAngka);
+        tglFile = atoi(inputAngka);
+        if(tglFile != tanggal && indexLogin != idxLogin){
+            continue;
+        }
+        fscanf(fptr, "%[^\n]%*c", deskripsi);
+        fscanf(fptr, "%[^\n]%*c", inputAngka);
+        harga = atoi(inputAngka);
+        printf("|| %s : Rp.%d\n", deskripsi, harga);
+    }
+    fclose(fptr);
+
+    //Membuka File Hiburan & Rekreasi
+    //Menghasilkan Output
+    fptr = fopen("database/daftarHiburan.txt", "r");
+    for(size_t i = 0; i < checkLines("database/daftarHiburan.txt")/4; i++){
+        fscanf(fptr, "%[^\n]%*c", idxAkun);
+        indexLogin = atoi(idxAkun);
+        fscanf(fptr, "%[^\n]%*c", inputAngka);
+        tglFile = atoi(inputAngka);
+        if(tglFile != tanggal && indexLogin != idxLogin){
+            continue;
+        }
+        fscanf(fptr, "%[^\n]%*c", deskripsi);
+        fscanf(fptr, "%[^\n]%*c", inputAngka);
+        harga = atoi(inputAngka);
+        printf("|| %s : Rp.%d\n", deskripsi, harga);
+    }
+    fclose(fptr);
+
+    //Membuka File Biaya Kesehatan
+    //Menghasilkan Output
+    fptr = fopen("database/daftarKesehatan.txt", "r");
+    for(size_t i = 0; i < checkLines("database/daftarKesehatan.txt")/4; i++){
+        fscanf(fptr, "%[^\n]%*c", idxAkun);
+        indexLogin = atoi(idxAkun);
+        fscanf(fptr, "%[^\n]%*c", inputAngka);
+        tglFile = atoi(inputAngka);
+        if(tglFile != tanggal && indexLogin != idxLogin){
+            continue;
+        }
+        fscanf(fptr, "%[^\n]%*c", deskripsi);
+        fscanf(fptr, "%[^\n]%*c", inputAngka);
+        harga = atoi(inputAngka);
+        printf("|| %s : Rp.%d\n", deskripsi, harga);
+    }
+    fclose(fptr);
+
+    //Membuka File Rumah Tangga
+    //Menghasilkan Output
+    fptr = fopen("database/daftarRumahTangga.txt", "r");
+    for(size_t i = 0; i < checkLines("database/daftarRumahTangga.txt")/4; i++){
+        fscanf(fptr, "%[^\n]%*c", idxAkun);
+        indexLogin = atoi(idxAkun);
+        fscanf(fptr, "%[^\n]%*c", inputAngka);
+        tglFile = atoi(inputAngka);
+        if(tglFile != tanggal && indexLogin != idxLogin){
+            continue;
+        }
+        fscanf(fptr, "%[^\n]%*c", deskripsi);
+        fscanf(fptr, "%[^\n]%*c", inputAngka);
+        harga = atoi(inputAngka);
+        printf("|| %s : Rp.%d\n", deskripsi, harga);
+    }
+    fclose(fptr);
+
+    //Membuka File Biaya Pendidikan
+    //Menghasilkan Output
+    fptr = fopen("database/daftarPendidikan.txt", "r");
+    for(size_t i = 0; i < checkLines("database/daftarPendidikan.txt")/4; i++){
+        fscanf(fptr, "%[^\n]%*c", idxAkun);
+        indexLogin = atoi(idxAkun);
+        fscanf(fptr, "%[^\n]%*c", inputAngka);
+        tglFile = atoi(inputAngka);
+        if(tglFile != tanggal && indexLogin != idxLogin){
+            continue;
+        }
+        fscanf(fptr, "%[^\n]%*c", deskripsi);
+        fscanf(fptr, "%[^\n]%*c", inputAngka);
+        harga = atoi(inputAngka);
+        printf("|| %s : Rp.%d\n", deskripsi, harga);
+    }
+    fclose(fptr);
+
+    //Membuka File Pakaian
+    //Menghasilkan Output
+    fptr = fopen("database/daftarPakaian.txt", "r");
+    for(size_t i = 0; i < checkLines("database/daftarPakaian.txt")/4; i++){
+        fscanf(fptr, "%[^\n]%*c", idxAkun);
+        indexLogin = atoi(idxAkun);
+        fscanf(fptr, "%[^\n]%*c", inputAngka);
+        tglFile = atoi(inputAngka);
+        if(tglFile != tanggal && indexLogin != idxLogin){
+            continue;
+        }
+        fscanf(fptr, "%[^\n]%*c", deskripsi);
+        fscanf(fptr, "%[^\n]%*c", inputAngka);
+        harga = atoi(inputAngka);
+        printf("|| %s : Rp.%d\n", deskripsi, harga);
+    }
+    fclose(fptr);
+
+    //Membuka File Lainnya
+    //Menghasilkan Output
+    fptr = fopen("database/daftarLainnya.txt", "r");
+    for(size_t i = 0; i < checkLines("database/daftarLainnya.txt")/4; i++){
+        fscanf(fptr, "%[^\n]%*c", idxAkun);
+        indexLogin = atoi(idxAkun);
+        fscanf(fptr, "%[^\n]%*c", inputAngka);
+        tglFile = atoi(inputAngka);
+        if(tglFile != tanggal && indexLogin != idxLogin){
+            continue;
+        }
+        fscanf(fptr, "%[^\n]%*c", deskripsi);
+        fscanf(fptr, "%[^\n]%*c", inputAngka);
+        harga = atoi(inputAngka);
+        printf("|| %s : Rp.%d\n", deskripsi, harga);
+    }
+    fclose(fptr);
+    printf("|| -------------------------------------------------- ||\n");
+    printf("|| Total : Rp.%d\n", user[idxLogin].tglPengeluaran[tanggal - 1]);
+    printf("|| ================================================== ||\n");
+
+}
+
+void dailyMonthRecap(struct dataUser user[], int idxLogin){
+    //Menampilkan Riwayat Pengeluaran User Berdasarkan Tanggal
+    //Catatan : Hanya Ditampilkan Jika Pada Tanggal Tersebut, Pengeluaran > 0
+    printf("|| ================================================== ||\n");
+    printf("||                Riwayat Pengeluaran                 ||\n");
+    printf("|| ================================================== ||\n");
+    printf("||         Tanggal        ||       Pengeluaran        ||\n");
+    printf("|| ================================================== ||\n");
+    for(int i = 0; i < 32; i++){
+        if(user[idxLogin].tglPengeluaran[i] > 0){
+            //If Else disini hanya digunakan untuk merapikan tabel
+            if(i < 10){
+                printf("|| %d %s             || Rp.%d                ||\n", i+1, bulanString(), user[idxLogin].tglPengeluaran[i]);
+            }else{
+                printf("|| %d %s            || Rp.%d                ||\n", i+1, bulanString(), user[idxLogin].tglPengeluaran[i]);
+            }
+        }
+    }
+    printf("|| ================================================== ||\n");
+    printf("||          Total         || Rp.%d                ||\n", user[idxLogin]. totalPengeluaran);
+    printf("|| ================================================== ||\n");
+    int option;
+    printf("|| Tanggal Yang Mau Ditinjau : ");
+    scanf("%d", &option);
+    //Memanggil Fungsi Harian
+    readHarian(user, option, idxLogin);
+}
+
+void categoryRecap(struct dataUser user[], int idxLogin, int pilihan){
+    system("clear");
+    //Menentukan Database Yang Akan Diakses Sesuai Pilihan User
+    char fileDirectory[100];
+    switch(pilihan){
+        case 1 :
+            strcpy(fileDirectory, "database/daftarMkn.txt");
+            printf("|| ================================================== ||\n");
+            printf("||              Pengeluaran Kategori Makanan          ||\n");
+            break;
+        case 2 :
+            strcpy(fileDirectory, "database/daftarTransportasi.txt");
+            printf("|| ================================================== ||\n");
+            printf("||           Pengeluaran Kategori Transportasi        ||\n");
+            break;
+        case 3 :
+            strcpy(fileDirectory, "database/daftarHiburan.txt");
+            printf("|| ================================================== ||\n");
+            printf("||              Pengeluaran Kategori Hiburan          ||\n");
+            break;
+        case 4 :
+            strcpy(fileDirectory, "database/daftarKesehatan.txt");
+            printf("|| ================================================== ||\n");
+            printf("||            Pengeluaran Kategori Kesehatan          ||\n");
+            break;
+        case 5 :
+            strcpy(fileDirectory, "database/daftarRumahTangga.txt");
+            printf("|| ================================================== ||\n");
+            printf("||           Pengeluaran Kategori Rumah Tangga        ||\n");
+            break;
+        case 6 :
+            strcpy(fileDirectory, "database/daftarPendidikan.txt");
+            printf("|| ================================================== ||\n");
+            printf("||            Pengeluaran Kategori Pendidikan         ||\n");
+            break;
+        case 7 :
+            strcpy(fileDirectory, "database/daftarPakaian.txt");   
+            printf("|| ================================================== ||\n");
+            printf("||            Pengeluaran Kategori Pakaian          ||\n"); 
+            break;
+        case 8 :
+            strcpy(fileDirectory, "database/daftarLainnya.txt");
+            printf("|| ================================================== ||\n");
+            printf("||             Pengeluaran Kategori Lainnya           ||\n");
+            break;
+    }
+    printf("||                      %s %d                 ||\n", bulanString(), thnHariIni());
+    printf("|| ================================================== ||\n");
+
+    //Membaca Isi File Database dan
+    //Menampilkan Output
+    FILE *fptr = fopen(fileDirectory, "r");
+    char inputString[50], deskripsi[50];
+    int idxLoginFile, tglFile, harga;
+
+    for(int i = 0; i < checkLines(fileDirectory)/4; i++){
+        //Membaca File
+        fscanf(fptr, "%[^\n]%*c", inputString);
+        idxLoginFile = atoi(inputString);
+        fscanf(fptr, "%[^\n]%*c", inputString);
+        tglFile = atoi(inputString);
+        fscanf(fptr, "%[^\n]%*c", deskripsi);
+        fscanf(fptr, "%[^\n]%*c", inputString);
+        harga = atoi(inputString);
+
+        //Mengeluarkan Output
+        if(idxLoginFile == idxLogin){
+            printf("|| %d Desember | Pengeluaran : %d\n", tglFile, harga);
+            printf("||             | Deskripsi : %s\n", deskripsi);
+            printf("|| --------------------------------------------------\n");
+        }
+    }
+}
+
+//Fungsi Menu Rekapan Kategori
+void dailyRecap(struct dataUser user[], int idxLogin){
+    int pilihan;
+    printf("|| ================================================== ||\n");
+    printf("||                    Pilih Kategori                  ||\n");
+    printf("||                     Pengeluaran                    ||\n");
+    printf("|| ================================================== ||\n");
+    printf("|| [1] Makanan dan Minuman                            ||\n");
+    printf("|| [2] Transportasi                                   ||\n");
+    printf("|| [3] Hiburan dan Rekreasi                           ||\n");
+    printf("|| [4] Biaya Kesehatan                                ||\n");
+    printf("|| [5] Biaya Rumah Tangga                             ||\n");
+    printf("|| [6] Biaya Pendidikan                               ||\n");
+    printf("|| [7] Pakaian                                        ||\n");
+    printf("|| [8] Lainnya                                        ||\n");
+    printf("|| ================================================== ||\n");
+    reVldInt(&pilihan, "|| Input Anda : ");
+    categoryRecap(user, idxLogin, pilihan);
+}
+
 //Fungsi Rekapan Bulanan
 void monthRecap(struct dataUser user[], int idxLogin){
     fflush(stdin);
     system("clear");
     //Setup Variabel (Digunakan untuk men-sorting pengeluaran, sehingga pengeluaran yang terbanyak ditampilkan terlebih dahulu)
+    //Catatan : Hanya Menampilkan Jika Pengeluaran > 0
     int penandaCtg[] = {0, 1, 2, 3, 4, 5, 6, 7};
     bubbleSort(user[idxLogin].jenisPengeluaran, penandaCtg);
-    //Catatan : Hanya Menampilkan Jika Pengeluaran > 0
     printf("|| ==================================================================================================== ||\n");
     printf("||                                             Rekap Pengeluaran                                        ||\n");
     printf("||                                               %s %d                                          ||\n", bulanString(), thnHariIni());
@@ -368,61 +835,74 @@ void monthRecap(struct dataUser user[], int idxLogin){
     printf("|| ==================================================================================================== ||\n");
     system("read -n 1 -s -p ''");
 
-    //Menu Pilihan
+    //Menu Pilihan Setelah Menampilkan
+    //Rekapan Bulanan
     int action;
     printf("|| ================================================== ||\n");
-    printf("||    No  |                   Action                  ||\n");
+    printf("||    No  |                   Option                  ||\n");
     printf("|| ================================================== ||\n");
-    printf("||   [1]  | Lihat Riwayat Pengeluaran                 ||\n");
-    printf("||   [2]  | Kembali ke Menu                           ||\n");
-    printf("||   [3]  | Keluar Program                            ||\n");
+    printf("||   [1]  | Riwayat Pengeluaran per Hari              ||\n");
+    printf("||   [2]  | Lihat Pengeluaran Berdasarkan Kategori    ||\n");
+    printf("||   [3]  | Kembali ke Menu                           ||\n");
+    printf("||   [4]  | Keluar Program                            ||\n");
     printf("|| ================================================== ||\n");
     reVldInt(&action, "|| Input Anda [] : ");
     system("clear");
     switch(action){
         case 1 :
-            //Menampilkan Riwayat Pengeluaran User Berdasarkan Tanggal
-            //Catatan : Hanya Ditampilkan Jika Pada Tanggal Tersebut, Pengeluaran > 0
-            printf("|| ================================================== ||\n");
-            printf("||                Riwayat Pengeluaran                 ||\n");
-            printf("|| ================================================== ||\n");
-            printf("||         Tanggal        ||       Pengeluaran        ||\n");
-            printf("|| ================================================== ||\n");
-            for(int i = 0; i < 32; i++){
-                if(user[idxLogin].tglPengeluaran[i] > 0){
-                    //If Else disini hanya digunakan untuk merapikan tabel
-                    if(i < 10){
-                        printf("|| %d %s             || Rp.%d                ||\n", i+1, bulanString(), user[idxLogin].tglPengeluaran[i]);
-                    }else{
-                        printf("|| %d %s            || Rp.%d                ||\n", i+1, bulanString(), user[idxLogin].tglPengeluaran[i]);
-                    }
-                }
-            }
-            printf("|| ================================================== ||\n");
-            printf("||          Total         || Rp.%d                ||\n", user[idxLogin]. totalPengeluaran);
-            printf("|| ================================================== ||\n");
-
-            //Menu Pilihan
+            //Memanggil Fungsi Pengeluaran per Hari
+            dailyMonthRecap(user, idxLogin);
             system("read -n 1 -s -p ''");
             fflush(stdin);
+
+            //Menu Pilihan Setelah Menampilkan Fungsi Pengeluaran Per Hari
             printf("|| ================================================== ||\n");
             printf("||    No  |                   Action                  ||\n");
             printf("|| ================================================== ||\n");
-            printf("||   [1]  | Kembali ke Menu                           ||\n");
-            printf("||   [2]  | Keluar Program                            ||\n");
+            printf("||   [1]  | Kembali ke Rekapan Bulanan                ||\n");
+            printf("||   [2]  | Kembali ke Menu                           ||\n");
+            printf("||   [3]  | Keluar Program                            ||\n");
             printf("|| ================================================== ||\n");
             reVldInt(&action, "|| Input Anda [] : ");
             switch (action){
                 case 1 :
+                    monthRecap(user, idxLogin);
                     break;
                 case 2 :
+                    break;
+                case 3 :
                     exit(0);
                     break;
             }
             break;
         case 2 :
+            //Memanggil Fungsi Pengeluaran Berdasarkan Kategori
+            dailyRecap(user, idxLogin);
+            system("read -n 1 -s -p ''");
+
+            //Menu Pilihan Setelah Menampilkan Fungsi Pengeluaran per Kategori
+            printf("|| ================================================== ||\n");
+            printf("||    No  |                   Action                  ||\n");
+            printf("|| ================================================== ||\n");
+            printf("||   [1]  | Kembali ke Rekapan Bulanan                ||\n");
+            printf("||   [2]  | Kembali ke Menu                           ||\n");
+            printf("||   [3]  | Keluar Program                            ||\n");
+            printf("|| ================================================== ||\n");
+            reVldInt(&action, "|| Input Anda [] : ");
+            switch(action){
+                case 1 :
+                    monthRecap(user, idxLogin);
+                    break;
+                case 2 :
+                    break;
+                case 3 :
+                    exit(0);
+                    break;
+            }
             break;
         case 3 :
+            break;
+        case 4 :
             exit(0);
             break;
     }
@@ -448,17 +928,22 @@ void todayManage(struct dataUser user[], int idxLogin, int totalUser){
     scanf("%d", &action);
     switch(action){
         case 1 :
+            //Memanggil Fungsi Pemasukan
             pemasukan(user, idxLogin, totalUser);
             break;
         case 2 :
+            //Memanggil Fungsi Pengeluaran
             pengeluaran(user, idxLogin, totalUser);
             break;
         case 3 :
+            //Memanggil Fungsi Rekapan Bulanan
             monthRecap(user, idxLogin);
             break;
         case 4 :
+            //Fungsi Keluar
             exit(0);
         default :
+            //Melakukan Rekursi Fungsi Jika Inputan Tidak Valid
             todayManage(user, idxLogin, totalUser);
             break;
     }
