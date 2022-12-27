@@ -2,10 +2,9 @@
 
 int main()
 {
-    int idxLogin;
-    struct dataUser user[3];
-    readFile(user);
-    menu(user, idxLogin);
+    struct dataUser user[checkLines("database/account.txt")/45 + 1];
+    readFile(user, checkLines("database/account.txt")/45);
+    menu(user, 0, checkLines("database/account.txt")/45);
 
     return 0;
 }
