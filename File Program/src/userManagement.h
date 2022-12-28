@@ -269,7 +269,6 @@ void tmbBiaya(struct dataUser user[], int idxLogin, int option, int totalUser){
 
         //Program Input Output
         user[idxLogin].jenisPengeluaran[2] += cost;
-        printf("|| ================================================== ||\n");
         printf("|| Nama Hiburan : ");
         scanf("%[^\n]", deskripsi);
         getchar();
@@ -295,7 +294,6 @@ void tmbBiaya(struct dataUser user[], int idxLogin, int option, int totalUser){
 
         //Program Input Output
         user[idxLogin].jenisPengeluaran[3] += cost;
-        printf("|| ================================================== ||\n");
         printf("|| Deskripsi : ");
         scanf("%[^\n]", deskripsi);
         getchar();
@@ -320,7 +318,6 @@ void tmbBiaya(struct dataUser user[], int idxLogin, int option, int totalUser){
 
         //Program Input Output
         user[idxLogin].jenisPengeluaran[4] += cost;
-        printf("|| ================================================== ||\n");
         printf("|| Deskripsi : ");
         scanf("%[^\n]", deskripsi);
         getchar();
@@ -345,7 +342,6 @@ void tmbBiaya(struct dataUser user[], int idxLogin, int option, int totalUser){
 
         //Program Input Output
         user[idxLogin].jenisPengeluaran[5] += cost;
-        printf("|| ================================================== ||\n");
         printf("|| Deskripsi : ");
         scanf("%[^\n]", deskripsi);
         getchar();
@@ -371,7 +367,6 @@ void tmbBiaya(struct dataUser user[], int idxLogin, int option, int totalUser){
 
         //Program Input Output
         user[idxLogin].jenisPengeluaran[6] += cost;
-        printf("|| ================================================== ||\n");
         printf("|| Deskripsi : ");
         scanf("%[^\n]", deskripsi);
         getchar();
@@ -397,7 +392,6 @@ void tmbBiaya(struct dataUser user[], int idxLogin, int option, int totalUser){
 
         //Program Input Output
         user[idxLogin].jenisPengeluaran[7] += cost;
-        printf("|| ================================================== ||\n");
         printf("|| Deskripsi : ");
         scanf("%[^\n]", deskripsi);
         getchar();
@@ -514,6 +508,7 @@ void readHarian(struct dataUser user[], int tanggal, int idxLogin){
     int harga, tglFile, indexLogin;
     FILE * fptr;
 
+    int simpanIdxLogin = idxLogin;
     //Membuka File Biaya Makanan
     //Menghasilkan Output 
     fptr = fopen("database/daftarMkn.txt", "r");
@@ -541,7 +536,7 @@ void readHarian(struct dataUser user[], int tanggal, int idxLogin){
         indexLogin = atoi(idxAkun);
         fscanf(fptr, "%[^\n]%*c", inputAngka);
         tglFile = atoi(inputAngka);
-        if(tglFile != tanggal && indexLogin != idxLogin){
+        if(tglFile != tanggal || indexLogin != idxLogin){
             continue;
         }
         fscanf(fptr, "%[^\n]%*c", deskripsi);
@@ -559,7 +554,7 @@ void readHarian(struct dataUser user[], int tanggal, int idxLogin){
         indexLogin = atoi(idxAkun);
         fscanf(fptr, "%[^\n]%*c", inputAngka);
         tglFile = atoi(inputAngka);
-        if(tglFile != tanggal && indexLogin != idxLogin){
+        if(tglFile != tanggal || indexLogin != idxLogin){
             continue;
         }
         fscanf(fptr, "%[^\n]%*c", deskripsi);
@@ -577,7 +572,7 @@ void readHarian(struct dataUser user[], int tanggal, int idxLogin){
         indexLogin = atoi(idxAkun);
         fscanf(fptr, "%[^\n]%*c", inputAngka);
         tglFile = atoi(inputAngka);
-        if(tglFile != tanggal && indexLogin != idxLogin){
+        if(tglFile != tanggal || indexLogin != idxLogin){
             continue;
         }
         fscanf(fptr, "%[^\n]%*c", deskripsi);
@@ -595,7 +590,7 @@ void readHarian(struct dataUser user[], int tanggal, int idxLogin){
         indexLogin = atoi(idxAkun);
         fscanf(fptr, "%[^\n]%*c", inputAngka);
         tglFile = atoi(inputAngka);
-        if(tglFile != tanggal && indexLogin != idxLogin){
+        if(tglFile != tanggal || indexLogin != idxLogin){
             continue;
         }
         fscanf(fptr, "%[^\n]%*c", deskripsi);
@@ -613,7 +608,7 @@ void readHarian(struct dataUser user[], int tanggal, int idxLogin){
         indexLogin = atoi(idxAkun);
         fscanf(fptr, "%[^\n]%*c", inputAngka);
         tglFile = atoi(inputAngka);
-        if(tglFile != tanggal && indexLogin != idxLogin){
+        if(tglFile != tanggal || indexLogin != idxLogin){
             continue;
         }
         fscanf(fptr, "%[^\n]%*c", deskripsi);
@@ -631,7 +626,7 @@ void readHarian(struct dataUser user[], int tanggal, int idxLogin){
         indexLogin = atoi(idxAkun);
         fscanf(fptr, "%[^\n]%*c", inputAngka);
         tglFile = atoi(inputAngka);
-        if(tglFile != tanggal && indexLogin != idxLogin){
+        if(tglFile != tanggal || indexLogin != idxLogin){
             continue;
         }
         fscanf(fptr, "%[^\n]%*c", deskripsi);
@@ -649,7 +644,7 @@ void readHarian(struct dataUser user[], int tanggal, int idxLogin){
         indexLogin = atoi(idxAkun);
         fscanf(fptr, "%[^\n]%*c", inputAngka);
         tglFile = atoi(inputAngka);
-        if(tglFile != tanggal && indexLogin != idxLogin){
+        if(tglFile != tanggal || indexLogin != idxLogin){
             continue;
         }
         fscanf(fptr, "%[^\n]%*c", deskripsi);
@@ -659,7 +654,7 @@ void readHarian(struct dataUser user[], int tanggal, int idxLogin){
     }
     fclose(fptr);
     printf("|| -------------------------------------------------- ||\n");
-    printf("|| Total : Rp.%d\n", user[idxLogin].tglPengeluaran[tanggal - 1]);
+    printf("|| Total : Rp.%d\n", user[simpanIdxLogin].tglPengeluaran[tanggal-1]);
     printf("|| ================================================== ||\n");
 
 }
@@ -676,18 +671,17 @@ void dailyMonthRecap(struct dataUser user[], int idxLogin){
         if(user[idxLogin].tglPengeluaran[i] > 0){
             //If Else disini hanya digunakan untuk merapikan tabel
             if(i < 10){
-                printf("|| %d %s             || Rp.%d                ||\n", i+1, bulanString(), user[idxLogin].tglPengeluaran[i]);
+                printf("|| %d %s             || Rp.%d                 ||\n", i+1, bulanString(), user[idxLogin].tglPengeluaran[i]);
             }else{
-                printf("|| %d %s            || Rp.%d                ||\n", i+1, bulanString(), user[idxLogin].tglPengeluaran[i]);
+                printf("|| %d %s            || Rp.%d                 ||\n", i+1, bulanString(), user[idxLogin].tglPengeluaran[i]);
             }
         }
     }
     printf("|| ================================================== ||\n");
-    printf("||          Total         || Rp.%d                ||\n", user[idxLogin]. totalPengeluaran);
+    printf("||          Total         || Rp.%d                 ||\n", user[idxLogin]. totalPengeluaran);
     printf("|| ================================================== ||\n");
     int option;
-    printf("|| Tanggal Yang Mau Ditinjau : ");
-    scanf("%d", &option);
+    reVldInt(&option, "|| Tanggal Yang Mau Ditinjau : ");
     //Memanggil Fungsi Harian
     readHarian(user, option, idxLogin);
 }
@@ -759,11 +753,14 @@ void categoryRecap(struct dataUser user[], int idxLogin, int pilihan){
 
         //Mengeluarkan Output
         if(idxLoginFile == idxLogin){
-            printf("|| %d Desember | Pengeluaran : %d\n", tglFile, harga);
-            printf("||             | Deskripsi : %s\n", deskripsi);
-            printf("|| --------------------------------------------------\n");
+            printf("   %d Desember | Pengeluaran : %d\n", tglFile, harga);
+            printf("               | Deskripsi : %s\n", deskripsi);
+            printf("   --------------------------------------------------\n");
         }
     }
+    printf("|| ================================================== ||\n");
+    printf("||                 Total : Rp.%d\n", user[idxLogin].jenisPengeluaran[pilihan - 1]);
+    printf("|| ================================================== ||\n");
 }
 
 //Fungsi Menu Rekapan Kategori
